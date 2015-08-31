@@ -6,6 +6,8 @@
   command: true
 - service: integrationtest
   command: deploy_to_heroku_app codeship-heroku-deployment
+- service: integrationtest
+  command: heroku run ls -a codeship-heroku-deployment
 - service: herokudeployment
   tag: master
   type: push
