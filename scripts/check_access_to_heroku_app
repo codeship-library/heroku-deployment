@@ -1,0 +1,14 @@
+#!/bin/bash
+# Check access to a Heroku application via the Heroku toolbelt
+HEROKU_API_KEY=${HEROKU_API_KEY:?'You need to configure the HEROKU_API_KEY environment variable!'}
+HEROKU_APP_NAME=${1:?'You need to provide the application name as a parameter on the command line.'}
+
+function error_message() {
+  echo -e "\e[31mThe application \"${HEROKU_APP_NAME}\" can't be accessed. Please make sure your Heroku API Key is configured correctly in the deployment configuration.\e[39m"
+}
+trap error_message ERR
+
+set -e
+
+heroku apps -A -p | grep -e "^${HEROKU_APP_NAME}\s"
+echo -e "\e[32mThe application \"${HEROKU_APP_NAME}\" can be accessed.\e[39m"
