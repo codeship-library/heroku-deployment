@@ -1,5 +1,3 @@
-- service: cache
-  command: ls
 - service: herokudeployment
   command: ls
 - service: integrationtest
