@@ -1,4 +1,11 @@
-- service: app
+- service: cache
+  command: ls
+- service: herokudeployment
+  command: ls
+- service: integrationtest
+  command: deploy_to_heroku_app codeship-heroku-deployment
+- service: herokudeployment
+  tag: master
   type: push
   image_name: codeship/heroku-deployment
   registry: https://index.docker.io/v1/
