@@ -6,9 +6,10 @@ HEROKU_APP_NAME=${1:?'You need to provide the application name as a parameter on
 : ${HEROKU_API_KEY?"Set the HEROKU_API_KEY environment variable. Get the key from https\:\/\/dashboard.heroku.com\/account"}
 
 function error_message() {
-  echo -e "Deployment Failed"
+  echo -e "Deployment Failed on line: $1"
 }
-trap error_message ERR
+
+trap 'error_message $LINENO' ERR
 
 set -o pipefail
 set -e
@@ -35,10 +36,14 @@ deployment=`curl -sS -X POST https://api.heroku.com/apps/codeship-heroku-deploym
 
 deployment_id=`echo "$deployment" | jq -r .id`
 
+echo "DEPLOYMENT: $deployment_id"
+
 output_stream_url=`echo "$deployment" | jq -r .output_stream_url`
 
 curl -sS "$output_stream_url"
 
-curl -sS https://api.heroku.com/apps/$HEROKU_APP_NAME/builds/$deployment_id -H 'Accept: application/vnd.heroku+json; version=3' -H "Authorization: Bearer $HEROKU_API_KEY" | jq .status | grep "succeeded" > /dev/null
+echo "CHECKING Api for deployment success:"
+
+curl -sS https://api.heroku.com/apps/$HEROKU_APP_NAME/builds/$deployment_id -H 'Accept: application/vnd.heroku+json; version=3' -H "Authorization: Bearer $HEROKU_API_KEY" | jq -r .status | grep "succeeded"
 
 echo "SUCCESSFULL DEPLOYMENT"
