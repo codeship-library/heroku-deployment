@@ -1,7 +1,9 @@
-- service: cache
-  command: ls
-- service: herokudeployment
-  command: ls
+- name: download_cache
+  service: cache
+  command: true
+- name: trigger_build
+  service: herokudeployment
+  command: true
 - service: integrationtest
   command: deploy_to_heroku_app codeship-heroku-deployment
 - service: herokudeployment
