@@ -6,7 +6,7 @@ HEROKU_APP_NAME=${1:?'You need to provide the application name as a parameter on
 : ${HEROKU_API_KEY?"Set the HEROKU_API_KEY environment variable. Get the key from https\:\/\/dashboard.heroku.com\/account"}
 
 function error_message() {
-  echo -e "Deployment Failed on line: $1"
+  echo -e "DEPLOYMENT FAILED on line $1 of the deployment script"
 }
 
 trap 'error_message $LINENO' ERR
@@ -42,8 +42,16 @@ output_stream_url=`echo "$deployment" | jq -r .output_stream_url`
 
 curl -sS "$output_stream_url"
 
-echo "CHECKING Api for deployment success:"
+# Sleep for 2 seconds to allow Heroku to store the result of the Deployment
+sleep 2
 
-curl -sS https://api.heroku.com/apps/$HEROKU_APP_NAME/builds/$deployment_id -H 'Accept: application/vnd.heroku+json; version=3' -H "Authorization: Bearer $HEROKU_API_KEY" | jq -r .status | grep "succeeded"
+echo "CHECKING Api for deployment success"
+
+deployment_result_json=`curl -sS https://api.heroku.com/apps/$HEROKU_APP_NAME/builds/$deployment_id -H 'Accept: application/vnd.heroku+json; version=3' -H "Authorization: Bearer $HEROKU_API_KEY"`
+
+deployment_status=`echo "$deployment_result_json" | jq -r .status`
+echo "DDEPLOYMENT STATUS: $deployment_status"
+
+[ "$deployment_status" = "succeeded" ]
 
 echo "SUCCESSFULL DEPLOYMENT"
