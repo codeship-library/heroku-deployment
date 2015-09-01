@@ -1,5 +1,5 @@
 - service: herokudeployment
-  command: ls
+  command: true
 - service: integrationtest
   command: deploy_to_heroku_app codeship-heroku-deployment
 - service: herokudeployment
