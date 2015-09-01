@@ -4,8 +4,7 @@ AFTER_DEPLOYMENT_WAIT_TIME=2
 
 echo "STARTING DEPLOYMENT"
 
-HEROKU_APP_NAME=${1:?'You need to provide the application name as a parameter on the command line.'}
-: ${HEROKU_API_KEY?"Set the HEROKU_API_KEY environment variable. Get the key from https\:\/\/dashboard.heroku.com\/account"}
+HEROKU_APP_NAME=$1
 
 function error_message() {
   echo -e "DEPLOYMENT FAILED on line $1 of the deployment script"
@@ -17,7 +16,7 @@ set -o pipefail
 set -e
 
 echo "CHECKING Access to Heroku application $HEROKU_APP_NAME"
-check_access_to_heroku_app $HEROKU_APP_NAME
+codeship_heroku check_access $HEROKU_APP_NAME
 
 ARTEFACT_PATH=/tmp/deployable_artifact.tar.gz
 
