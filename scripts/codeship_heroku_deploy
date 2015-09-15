@@ -33,7 +33,7 @@ echo "UPLOADING tar.gz file to Heroku"
 curl -sS -X PUT "$put_url" -H 'Content-Type:' --data-binary @$ARTEFACT_PATH
 
 echo "STARTING Build process on Heroku"
-deployment=`curl -sS -X POST https://api.heroku.com/apps/codeship-heroku-deployment/builds -d "{\"source_blob\":{\"url\":\"$get_url\", \"version\": \"sfghdjhtjtjdghjdhdfghdfghfdshsggadfg\"}}" -H 'Accept: application/vnd.heroku+json; version=3' -H 'Content-Type: application/json' -H "Authorization: Bearer $HEROKU_API_KEY"`
+deployment=`curl -sS -X POST https://api.heroku.com/apps/$HEROKU_APP_NAME/builds -d "{\"source_blob\":{\"url\":\"$get_url\", \"version\": \"sfghdjhtjtjdghjdhdfghdfghfdshsggadfg\"}}" -H 'Accept: application/vnd.heroku+json; version=3' -H 'Content-Type: application/json' -H "Authorization: Bearer $HEROKU_API_KEY"`
 
 deployment_id=`echo "$deployment" | jq -r .id`
 
