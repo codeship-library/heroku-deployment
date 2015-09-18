@@ -5,7 +5,7 @@ herokudeployment:
 integrationtest:
   build:
     image: codeship/heroku-deployment-integrationtest
-    dockerfile_path: Dockerfile.integrationtest
-  encrypted_env_file: heroku-deployment.env.encrypted
+    dockerfile_path: test/Dockerfile.integrationtest
+  encrypted_env_file: test/heroku-deployment.env.encrypted
 cache:
   image: codeship/heroku-deployment:latest
