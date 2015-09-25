@@ -7,13 +7,12 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 HEROKU_API_KEY=${HEROKU_API_KEY:?'Set the HEROKU_API_KEY environment variable. Get the key from https://dashboard.heroku.com/account'}
 
 SCRIPT_NAME=${1:?'You need to provide the action as the first parameter'}
-APPLICATION_NAME=${2:?'You need to provide the application name as the second parameter'}
 
 SCRIPT_PATH=$DIR/codeship_heroku_$SCRIPT_NAME
 
 if [ -x $SCRIPT_PATH ]
 then
-  $SCRIPT_PATH $APPLICATION_NAME
+  $SCRIPT_PATH "${@:2}"
 else
   echo "ACTION ${SCRIPT_NAME} is currently not supported"
   exit 1

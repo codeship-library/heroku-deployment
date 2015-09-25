@@ -5,7 +5,7 @@
   service: herokudeployment
   command: true
 - service: integrationtest
-  command: codeship_heroku deploy codeship-heroku-deployment
+  command: codeship_heroku deploy /app/test codeship-heroku-deployment
 - service: integrationtest
   command: heroku run --exit-code --app codeship-heroku-deployment -- true
 - service: herokudeployment

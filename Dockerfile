@@ -23,7 +23,3 @@ RUN wget -q -O /usr/bin/jq https://github.com/stedolan/jq/releases/download/jq-$
 RUN chmod 744 /usr/bin/jq
 
 COPY scripts/ /usr/bin/
-
-ONBUILD RUN mkdir /app
-ONBUILD WORKDIR /app
-ONBUILD COPY . /app
