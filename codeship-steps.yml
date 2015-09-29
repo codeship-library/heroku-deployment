@@ -4,9 +4,9 @@
 - name: trigger_build
   service: herokudeployment
   command: true
-- service: integrationtest
+- service: herokudeployment
   command: codeship_heroku deploy /app/test codeship-heroku-deployment
-- service: integrationtest
+- service: herokudeployment
   command: heroku run --exit-code --app codeship-heroku-deployment -- true
 - service: herokudeployment
   tag: master

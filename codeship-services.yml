@@ -2,8 +2,6 @@ herokudeployment:
   build:
     image: codeship/heroku-deployment
     dockerfile_path: Dockerfile
-integrationtest:
-  image: codeship/heroku-deployment
   encrypted_env_file: heroku-deployment.env.encrypted
   volumes:
     - ./:/app
