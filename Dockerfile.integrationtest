@@ -1,1 +1,0 @@
-FROM codeship/heroku-deployment:latest
