@@ -3,7 +3,7 @@
   command: codeship_heroku deploy /app/test codeship-deployment-test
 - name: Heroku Run Test
   service: heroku
-  command: heroku run --exit-code --app codeship-heroku-deployment -- true
+  command: heroku run --exit-code --app codeship-deployment-test -- true
 - name: Push to DockerHub
   service: heroku
   tag: master
