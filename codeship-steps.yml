@@ -1,14 +1,11 @@
-- name: download_cache
-  service: cache
-  command: true
-- name: trigger_build
-  service: herokudeployment
-  command: true
-- service: herokudeployment
-  command: codeship_heroku deploy /app/test codeship-heroku-deployment
-- service: herokudeployment
-  command: heroku run --exit-code --app codeship-heroku-deployment -- true
-- service: herokudeployment
+- name: Deployment Test
+  service: heroku
+  command: codeship_heroku deploy /app/test codeship-deployment-test
+- name: Heroku Run Test
+  service: heroku
+  command: heroku run --exit-code --app codeship-deployment-test -- true
+- name: Push to DockerHub
+  service: heroku
   tag: master
   type: push
   image_name: codeship/heroku-deployment

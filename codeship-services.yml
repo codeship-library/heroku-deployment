@@ -1,9 +1,8 @@
-herokudeployment:
+heroku:
   build:
     image: codeship/heroku-deployment
     dockerfile_path: Dockerfile
+  cached: true
   encrypted_env_file: heroku-deployment.env.encrypted
   volumes:
     - ./:/app
-cache:
-  image: codeship/heroku-deployment:latest
