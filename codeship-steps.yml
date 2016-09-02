@@ -1,6 +1,3 @@
-- name: download_cache
-  service: cache
-  command: true
 - name: trigger_build
   service: herokudeployment
   command: true
