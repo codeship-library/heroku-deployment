@@ -10,5 +10,5 @@ trap error_message ERR
 
 set -e
 
-heroku apps -A -p | grep -e "^${HEROKU_APP_NAME}\s"
+heroku apps -A -p | grep -e "^${HEROKU_APP_NAME}$"
 echo -e "\e[32mThe application \"${HEROKU_APP_NAME}\" can be accessed.\e[39m"
