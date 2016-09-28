@@ -6,3 +6,15 @@ heroku:
   encrypted_env_file: heroku-deployment.env.encrypted
   volumes:
     - ./:/app
+dockercfg_generator:
+  build:
+    image: codeship/heroku-dockercfg-generator
+    path: ./dockercfg-generator
+    dockerfile_path: Dockerfile
+  add_docker: true
+  encrypted_env_file: heroku-deployment.env.encrypted
+dockercfg_test:
+  build:
+    image: registry.heroku.com/codeship-deployment-test/web
+    path: ./dockercfg-generator
+    dockerfile_path: Dockerfile.test

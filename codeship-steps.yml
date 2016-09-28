@@ -4,10 +4,30 @@
 - name: Heroku Run Test
   service: heroku
   command: heroku run --exit-code --app codeship-deployment-test -- true
-- name: Push to DockerHub
-  service: heroku
-  tag: master
-  type: push
-  image_name: codeship/heroku-deployment
-  registry: https://index.docker.io/v1/
-  encrypted_dockercfg_path: dockercfg.encrypted
+- name: Test dockercfg Generator
+  type: serial
+  steps:
+    - name: Build
+      service: dockercfg_generator
+      command: true
+    - name: Test Push
+      service: dockercfg_test
+      type: push
+      image_name: registry.heroku.com/codeship-deployment-test/web
+      registry: registry.heroku.com
+      dockercfg_service: dockercfg_generator
+- name: Deploy (to Docker Hub)
+  type: serial
+  steps:
+    - name: Push Deployment
+      service: heroku
+      tag: master
+      type: push
+      image_name: codeship/heroku-deployment
+      encrypted_dockercfg_path: dockercfg.encrypted
+    - name: Push dockercfg Generator
+      service: dockercfg_generator
+      tag: master
+      type: push
+      image_name: codeship/heroku-dockercfg-generator
+      encrypted_dockercfg_path: dockercfg.encrypted
