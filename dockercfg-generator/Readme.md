@@ -9,10 +9,9 @@ you must mount a docker socket, or provide access to a Docker host in some way.
 $ cat heroku_creds.env
 HEROKU_API_KEY=XXXXXXXXXXXXXXXXXXX
 $ docker run -it -v ./data:/opt/data --env-file=heroku_creds.env -v /var/run/docker.sock:/var/run/docker.sock codeship/heroku-dockercfg-generator /opt/data/heroku.dockercfg
-Logging into AWS ECR
-WARNING: login credentials saved in /root/.docker/config.json
+Logging into Heroku Container Registry
 Login Succeeded
-Writing Docker creds to /opt/data/aws.dockerccfg
+Writing Docker creds to /opt/data/heroku.dockercfg
 $ cat ./data/heroku.dockercfg # file is available locally
 ```
 
