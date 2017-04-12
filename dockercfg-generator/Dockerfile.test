@@ -1,5 +1,5 @@
-FROM alpine:3.4
-MAINTAINER maintainers@codeship.com
+FROM alpine:3.5
+LABEL maintainer maintainers@codeship.com
 
 RUN \
   echo "Hello Container Registry at $(date)" > hello.txt && \

@@ -1,7 +1,8 @@
 FROM debian:jessie
-MAINTAINER maintainers@codeship.com
+LABEL maintainer maintainers@codeship.com
 
 ENV \
+  CACHE_BUST=1 \
   JQ_VERSION="1.5" \
   PATH="/usr/local/heroku/bin:$PATH"
 
