@@ -1,5 +1,5 @@
 FROM debian:jessie
-MAINTAINER maintainers@codeship.com
+LABEL maintainer maintainers@codeship.com
 
 ENV \
   CACHE_BUST=1 \
