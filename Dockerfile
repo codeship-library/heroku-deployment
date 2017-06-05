@@ -2,7 +2,7 @@ FROM debian:jessie
 LABEL maintainer maintainers@codeship.com
 
 ENV \
-  CACHE_BUST=1 \
+  CACHE_BUST=2 \
   JQ_VERSION="1.5" \
   PATH="/usr/local/heroku/bin:$PATH"
 
