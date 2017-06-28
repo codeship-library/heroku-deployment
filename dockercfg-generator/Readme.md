@@ -41,7 +41,7 @@ heroku_dockercfg:
   type: push
   tag: master
   image_name: registry.heroku.com/codeship-sample-app/web
-  registry: regisrty.heroku.com
+  registry: registry.heroku.com
   dockercfg_service: heroku_dockercfg
 ```
 
