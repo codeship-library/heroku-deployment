@@ -1,4 +1,4 @@
-FROM docker:1.13
+FROM docker:stable
 LABEL maintainer maintainers@codeship.com
 
 COPY heroku_docker_creds.sh /usr/local/bin/
