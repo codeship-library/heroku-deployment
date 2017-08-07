@@ -1,5 +1,5 @@
 FROM debian:jessie
-LABEL maintainer maintainers@codeship.com
+LABEL maintainer='Codeship Inc., <maintainers@codeship.com>'
 
 ENV CACHE_BUST='2017-08-07' \
     JQ_VERSION='1.5' \
