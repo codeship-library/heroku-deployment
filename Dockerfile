@@ -1,10 +1,9 @@
 FROM debian:jessie
 LABEL maintainer maintainers@codeship.com
 
-ENV \
-  CACHE_BUST=1 \
-  JQ_VERSION="1.5" \
-  PATH="/usr/local/heroku/bin:$PATH"
+ENV CACHE_BUST='2017-08-07' \
+    JQ_VERSION='1.5' \
+    PATH="/usr/local/heroku/bin:${PATH}"
 
 RUN \
   apt-get update && \
