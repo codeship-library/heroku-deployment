@@ -4,13 +4,9 @@ set -e
 
 echo 'Heroku Registry dockercfg generator'
 
-: "${HEROKU_API_KEY:?Need to set HEROKU_API_KEY}"
+: "${HEROKU_API_KEY:?Need to set your HEROKU_API_KEY}"
 
-# fetching Heroku Docker login
-echo "Logging into Heroku Container Registry"
-docker login --username=_ --password="${HEROKU_API_KEY}" "registry.heroku.com"
-
-# writing aws docker creds to desired path
-echo "Writing Docker creds to $1"
-chmod 544 ~/.docker/config.json
-cp ~/.docker/config.json $1
+DOCKER_USERNAME="_" \
+DOCKER_PASSWORD="${HEROKU_API_KEY}" \
+DOCKER_REGISTRY="registry.heroku.com" \
+/bin/docker_creds.sh "${1}"
