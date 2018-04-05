@@ -1,0 +1,33 @@
+- name: install heroku apt key
+  apt_key:
+    url: "https://cli-assets.heroku.com/apt/release.key"
+    state: present
+
+- name: install heroku apt repository
+  apt_repository:
+    repo: deb https://cli-assets.heroku.com/branches/stable/apt ./
+    state: present
+
+- name: install heroku package
+  apt:
+    package: heroku
+    state: installed
+
+- name: create heroku directory
+  file:
+    dest: "{{ heroku_home }}/.heroku"
+    state: directory
+  become: True
+  become_user: "{{ heroku_user }}"
+
+- name: get installed heroku plugins
+  shell: heroku plugins
+  register: heroku_plugins
+  become: True
+  become_user: "{{ heroku_user }}"
+
+- name: install builds plugin
+  shell: heroku plugins:install heroku-builds
+  become: True
+  become_user: "{{ heroku_user }}"
+  when: heroku_plugins.stdout is not search("heroku-builds")

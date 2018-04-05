@@ -1,0 +1,19 @@
+FROM ubuntu:14.04
+
+RUN \
+  apt-get update && \
+  apt-get install -y --no-install-recommends python-setuptools apt-transport-https ca-certificates && \
+  easy_install pip==9.0.3 && \
+  pip install ansible==2.4.0.0 pyasn1==0.3.6 ndg-httpsclient==0.4.3 urllib3==1.22 pyOpenSSL==17.3.0
+
+COPY tasks /heroku/tasks
+
+#RUN echo "deb https://cli-assets.heroku.com/branches/stable/apt ./" > /etc/apt/sources.list.d/heroku.list
+#RUN curl -fsSL https://cli-assets.heroku.com/apt/release.key | apt-key add -
+#RUN apt-get update
+
+RUN echo '---\n- hosts: localhost\n  roles:\n  - role: heroku\n    heroku_user: root\n    heroku_home: /root' > site.yml
+
+RUN ansible-playbook -i localhost -c local site.yml
+
+COPY deployment/scripts /root/bin
