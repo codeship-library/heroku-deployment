@@ -8,10 +8,6 @@ RUN \
 
 COPY tasks /heroku/tasks
 
-#RUN echo "deb https://cli-assets.heroku.com/branches/stable/apt ./" > /etc/apt/sources.list.d/heroku.list
-#RUN curl -fsSL https://cli-assets.heroku.com/apt/release.key | apt-key add -
-#RUN apt-get update
-
 RUN echo '---\n- hosts: localhost\n  roles:\n  - role: heroku\n    heroku_user: root\n    heroku_home: /root' > site.yml
 
 RUN ansible-playbook -i localhost -c local site.yml
