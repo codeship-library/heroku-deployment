@@ -1,3 +1,10 @@
+heroku_on_ansible:
+  build:
+    image: codeship/heroku-deployment-ansible
+    dockerfile_path: Dockerfile.ansible
+  cached: true
+  volumes:
+    - ./deployment/test:/app
 heroku:
   build:
     image: codeship/heroku-deployment

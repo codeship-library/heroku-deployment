@@ -1,0 +1,5 @@
+#!/bin/bash
+ARGS=${@:1:$#-1}
+APP_NAME=${@: -1}
+
+heroku run --exit-code --app ${APP_NAME} -- ${ARGS}

@@ -1,3 +1,6 @@
+- name: Deployment Test via Ansible
+  service: heroku_on_ansible
+  command: codeship_heroku_deploy -f /app -N codeship-deployment-test
 - name: Deployment Test
   service: heroku
   command: codeship_heroku deploy /app/test codeship-deployment-test
