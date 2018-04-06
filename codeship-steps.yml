@@ -15,7 +15,7 @@
   command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app
 - name: Deployment Test via plain container with old entry point/command
   service: heroku
-  command: codeship_heroku deploy /app/test codeship-deployment-test
+  command: codeship_heroku deploy /app codeship-deployment-test
 - name: Heroku Run Test
   service: heroku
   command: heroku run --exit-code --app codeship-test-ruby-app -- true
