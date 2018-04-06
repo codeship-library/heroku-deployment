@@ -1,12 +1,12 @@
-- name: Deployment Test via Ansible
+- name: Deployment Test via Ansible Container
   service: heroku_on_ansible
-  command: codeship_heroku_deploy -f /app -N codeship-deployment-test
+  command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app
 - name: Deployment Test
   service: heroku
-  command: codeship_heroku deploy /app/test codeship-deployment-test
+  command: codeship_heroku deploy /app/test codeship-test-ruby-app
 - name: Heroku Run Test
   service: heroku
-  command: heroku run --exit-code --app codeship-deployment-test -- true
+  command: heroku run --exit-code --app codeship-test-ruby-app -- true
 - name: Test dockercfg Generator
   type: serial
   steps:

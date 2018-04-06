@@ -3,12 +3,12 @@ heroku_on_ansible:
     image: codeship/heroku-deployment-ansible
     dockerfile_path: Dockerfile.ansible
   cached: true
+  encrypted_env_file: heroku-deployment.env.encrypted
   volumes:
     - ./deployment/test:/app
 heroku:
   build:
     image: codeship/heroku-deployment
-    path: ./deployment
     dockerfile_path: Dockerfile
   cached: true
   encrypted_env_file: heroku-deployment.env.encrypted

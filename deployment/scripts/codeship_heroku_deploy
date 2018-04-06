@@ -11,7 +11,7 @@ CODESHIP_HEROKU_POST_DEPLOY_COMMAND=${CODESHIP_HEROKU_POST_DEPLOY_COMMAND:-""}
 CODESHIP_HEROKU_URL=${CODESHIP_HEROKU_URL:-""}
 CODESHIP_HEROKU_CHECK_APP_URL=${CODESHIP_HEROKU_CHECK_APP_URL:-false}
 
-SCRIPT_DIRECTORY=$(dirname "$0")
+SCRIPT_DIRECTORY="$( cd "$(dirname "$0")" ; pwd -P )"
 
 function help {
   cat << EOF
@@ -73,6 +73,7 @@ trap 'echo error executing "$(eval echo "$BASH_COMMAND")" in line $LINENO' ERR
 if [ "${CODESHIP_HEROKU_DEPLOY_FOLDER}" != "${PWD}" ]; then
   cd "${CODESHIP_HEROKU_DEPLOY_FOLDER}"
 fi
+
 
 if ! HEROKU_API_KEY=$CODESHIP_HEROKU_API_KEY "${SCRIPT_DIRECTORY}/codeship_heroku_check_access" "${CODESHIP_HEROKU_APP_NAME}"; then
   echo "could not access heroku app ${CODESHIP_HEROKU_APP_NAME}, exiting" >&2

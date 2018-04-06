@@ -1,16 +1,14 @@
 FROM debian:jessie
 LABEL maintainer='Codeship Inc., <maintainers@codeship.com>'
 
-ENV CACHE_BUST='2017-10-02' \
-    JQ_VERSION='1.5' \
+ENV CACHE_BUST='2018-04-06' \
     PATH="/usr/local/heroku/bin:${PATH}"
 
 RUN \
   apt-get update && \
   apt-get install -y --no-install-recommends \
     bash \
-    curl \
-    ruby \
+    ca-certificates \
     sudo \
     wget && \
   apt-get clean -y && \
@@ -23,9 +21,4 @@ RUN \
   apt-get clean -y && \
   rm -rf /var/lib/apt/lists/*
 
-# Install JQ, required for some of the included scripts
-RUN \
-  wget -q -O /usr/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" && \
-  chmod 744 /usr/bin/jq
-
-COPY scripts/ /usr/bin/
+COPY deployment/scripts/ /usr/bin/
