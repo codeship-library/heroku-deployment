@@ -16,7 +16,7 @@
     - name: Test Push
       service: dockercfg_test
       type: push
-      image_name: registry.heroku.com/codeship-deployment-test/web
+      image_name: registry.heroku.com/codeship-container-deploy-test/web
       registry: registry.heroku.com
       dockercfg_service: dockercfg_generator
 - name: Deploy (to Docker Hub)
