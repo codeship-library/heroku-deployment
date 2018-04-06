@@ -40,6 +40,12 @@
   become: True
   become_user: "{{ heroku_user }}"
 
+- name: fix file permissions
+  file:
+    dest: "{{ heroku_home }}/bin/"
+    owner: "{{ heroku_user }}"
+    recurse: yes
+
 - name: link scripts into "legacy" places
   file:
     src: "{{ heroku_home }}/bin/{{ item.src }}"
