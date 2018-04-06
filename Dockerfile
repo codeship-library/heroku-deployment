@@ -19,6 +19,7 @@ RUN \
   wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh && \
   heroku --version && \
   apt-get clean -y && \
+  heroku plugins:install heroku-builds && \
   rm -rf /var/lib/apt/lists/*
 
 COPY deployment/scripts/ /usr/bin/

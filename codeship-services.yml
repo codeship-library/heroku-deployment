@@ -13,7 +13,7 @@ heroku:
   cached: true
   encrypted_env_file: heroku-deployment.env.encrypted
   volumes:
-    - ./deployment/:/app
+    - ./deployment/test:/app
 dockercfg_generator:
   build:
     image: codeship/heroku-dockercfg-generator

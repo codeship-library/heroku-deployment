@@ -68,9 +68,10 @@ if [ "${CODESHIP_HEROKU_API_KEY}" == "" ]; then
   exit 1
 fi
 
-trap 'echo error executing "$(eval echo "$BASH_COMMAND")" in line $LINENO' ERR
+trap 'echo error executing "$BASH_COMMAND" in line $LINENO' ERR
 
 if [ "${CODESHIP_HEROKU_DEPLOY_FOLDER}" != "${PWD}" ]; then
+  echo "Changing directory to ${CODESHIP_HEROKU_DEPLOY_FOLDER}"
   cd "${CODESHIP_HEROKU_DEPLOY_FOLDER}"
 fi
 

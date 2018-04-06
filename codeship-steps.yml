@@ -3,7 +3,7 @@
   command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app
 - name: Deployment Test
   service: heroku
-  command: codeship_heroku deploy /app/test codeship-test-ruby-app
+  command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app
 - name: Heroku Run Test
   service: heroku
   command: heroku run --exit-code --app codeship-test-ruby-app -- true
