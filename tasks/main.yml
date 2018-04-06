@@ -31,3 +31,8 @@
   become: True
   become_user: "{{ heroku_user }}"
   when: heroku_plugins.stdout is not search("heroku-builds")
+
+- name: put scripts into place
+  synchronize:
+    src: "{{ role_path }}/deployment/scripts/"
+    dest: "{{ heroku_home }}/bin/"
