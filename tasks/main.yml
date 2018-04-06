@@ -39,3 +39,14 @@
     use_ssh_args: True
   become: True
   become_user: "{{ heroku_user }}"
+
+- name: link scripts into "legacy" places
+  file:
+    src: "{{ heroku_home }}/bin/{{ item.src }}"
+    dest: "{{ heroku_home }}/bin/{{ item.dest}}"
+  become: True
+  become_user: "{{ heroku_user }}"
+  state: link
+  with_items:
+    - { src: "codeship_heroku_run", dest: "heroku_run" }
+    - { src: "codeship_heroku_check_access", dest: "check_access_to_heroku_app" }

@@ -1,9 +1,18 @@
 - name: Deployment Test via Ansible Container
   service: heroku_on_ansible
   command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app
-- name: Deployment Test
+- name: Deployment Test via Ansible Container with extra command
+  service: heroku_on_ansible
+  command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app -d 'echo "foo"'
+- name: Deployment Test via Ansible Container with URL check
+  service: heroku_on_ansible
+  command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app -c
+- name: Deployment Test via plain container
   service: heroku
   command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app
+- name: Deployment Test via plain container with old entry point/command
+  service: heroku
+  command: codeship_heroku deploy /app/test codeship-deployment-test
 - name: Heroku Run Test
   service: heroku
   command: heroku run --exit-code --app codeship-test-ruby-app -- true
