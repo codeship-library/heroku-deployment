@@ -32,6 +32,36 @@ optional:
 EOF
 }
 
+function check_url {
+  local tries=6
+  local status=0
+  local cmd="wget --no-check-certificate --output-document=/dev/null ${1}"
+
+  for (( i = 1; i <=${tries}; i++ )); do
+    echo -e "\e[0;36mTrying ($i of ${TRIES}) '${cmd}'\e[0m"
+    ${cmd}
+    status=$?
+
+    if [ ${status} -eq 0 ]; then
+      break
+    fi
+
+    if [ ${status} -eq 5 ]; then
+      echo -e "\e[0;33mCheck failed because of an error validating the SSL certificate.\e[0m"
+      echo -e "\e[0;33mWe will retry without checking the certificate, but this behaviour will change in the future!\e[0m"
+      cmd="${original_cmd}"
+      status=0
+    fi
+
+    if [ $i -lt ${TRIES} ]; then
+      echo -e "\e[0;36mWaiting ${WAIT} seconds before trying again.\e[0m"
+      echo "------------------------------------------------------------------------------------------------------"
+      sleep "${WAIT}"
+    fi
+  done
+
+  return ${status}
+}
 
 while getopts "N:K:f:u:d:ch" opt; do
   case "$opt" in
@@ -85,12 +115,12 @@ fi
 HEROKU_API_KEY=${CODESHIP_HEROKU_API_KEY} heroku builds:create --include-vcs-ignore -a "${CODESHIP_HEROKU_APP_NAME}"
 
 if [ "${CODESHIP_HEROKU_POST_DEPLOY_COMMAND}" != "" ]; then
-  HEROKU_API_KEY=$CODESHIP_HEROKU_API_KEY "${SCRIPT_DIRECTORY}/heroku_run" "${CODESHIP_HEROKU_POST_DEPLOY_COMMAND}" "${CODESHIP_HEROKU_APP_NAME}"
+  HEROKU_API_KEY=$CODESHIP_HEROKU_API_KEY "${SCRIPT_DIRECTORY}/codeship_heroku_run" "${CODESHIP_HEROKU_POST_DEPLOY_COMMAND}" "${CODESHIP_HEROKU_APP_NAME}"
 fi
 
 if [ "${CODESHIP_HEROKU_CHECK_APP_URL}" == "true" ]; then
   URL="${CODESHIP_HEROKU_URL:-"http://${CODESHIP_HEROKU_APP_NAME}.herokuapp.com"}"
-  "${SCRIPT_DIRECTORY}/check_url" "${URL}"
+  check_url "${URL}"
 fi
 
 cd "${PREVIOUS_WORKING_DIRECTORY}"
