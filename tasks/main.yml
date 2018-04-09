@@ -1,0 +1,58 @@
+- name: install heroku apt key
+  apt_key:
+    url: "https://cli-assets.heroku.com/apt/release.key"
+    state: present
+
+- name: install heroku apt repository
+  apt_repository:
+    repo: deb https://cli-assets.heroku.com/branches/stable/apt ./
+    state: present
+
+- name: install heroku package
+  apt:
+    package: heroku
+    state: installed
+
+- name: create heroku directory
+  file:
+    dest: "{{ heroku_home }}/.heroku"
+    state: directory
+  become: True
+  become_user: "{{ heroku_user }}"
+
+- name: get installed heroku plugins
+  shell: heroku plugins
+  register: heroku_plugins
+  become: True
+  become_user: "{{ heroku_user }}"
+
+- name: install builds plugin
+  shell: heroku plugins:install heroku-builds
+  become: True
+  become_user: "{{ heroku_user }}"
+  when: heroku_plugins.stdout is not search("heroku-builds")
+
+- name: put scripts into place
+  synchronize:
+    src: "{{ role_path }}/deployment/scripts/"
+    dest: "{{ heroku_home }}/bin/"
+    use_ssh_args: True
+  become: True
+  become_user: "{{ heroku_user }}"
+
+- name: fix file permissions
+  file:
+    dest: "{{ heroku_home }}/bin/"
+    owner: "{{ heroku_user }}"
+    recurse: yes
+
+- name: link scripts into "legacy" places
+  file:
+    src: "{{ heroku_home }}/bin/{{ item.src }}"
+    dest: "{{ heroku_home }}/bin/{{ item.dest }}"
+    state: link
+  become: True
+  become_user: "{{ heroku_user }}"
+  with_items:
+    - { src: "codeship_heroku_run", dest: "heroku_run" }
+    - { src: "codeship_heroku_check_access", dest: "check_access_to_heroku_app" }

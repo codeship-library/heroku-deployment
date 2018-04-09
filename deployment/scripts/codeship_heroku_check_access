@@ -1,13 +1,11 @@
 #!/bin/bash
+set -e
+
 # Check access to a Heroku application via the Heroku toolbelt
 HEROKU_APP_NAME=${1:?'You need to provide the application name as the second parameter'}
 
-function error_message() {
+if ! heroku apps:info "${HEROKU_APP_NAME}"; then
   echo -e "\e[31mThe application \"${HEROKU_APP_NAME}\" can't be accessed. Please make sure your Heroku API Key is configured correctly in the deployment configuration.\e[39m"
-}
-trap error_message ERR
-
-set -e
-
-heroku apps:info "${HEROKU_APP_NAME}"
-echo -e "\e[32mThe application \"${HEROKU_APP_NAME}\" can be accessed.\e[39m"
+else
+  echo -e "\e[32mThe application \"${HEROKU_APP_NAME}\" can be accessed.\e[39m"
+fi

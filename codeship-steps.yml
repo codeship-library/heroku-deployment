@@ -1,9 +1,24 @@
-- name: Deployment Test
+- name: Deployment Test via Ansible Container
+  service: heroku_on_ansible
+  command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app
+- name: Deployment Test via Ansible Container with extra command
+  service: heroku_on_ansible
+  command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app -d 'echo "foo"'
+- name: Deployment Test via Ansible Container with URL check
+  service: heroku_on_ansible
+  command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app -c
+- name: Make sure that files are executable in "legacy paths"
+  service: heroku_on_ansible
+  command: bash -c 'test -x "$(which check_access_to_heroku_app)" && test -x "$(which heroku_run)"'
+- name: Deployment Test via plain container
   service: heroku
-  command: codeship_heroku deploy /app/test codeship-deployment-test
+  command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app
+- name: Deployment Test via plain container with old entry point/command
+  service: heroku
+  command: codeship_heroku deploy /app codeship-test-ruby-app
 - name: Heroku Run Test
   service: heroku
-  command: heroku run --exit-code --app codeship-deployment-test -- true
+  command: heroku run --exit-code --app codeship-test-ruby-app -- true
 - name: Test dockercfg Generator
   type: serial
   steps:
@@ -13,7 +28,7 @@
     - name: Test Push
       service: dockercfg_test
       type: push
-      image_name: registry.heroku.com/codeship-deployment-test/web
+      image_name: registry.heroku.com/codeship-container-deploy-test/web
       registry: registry.heroku.com
       dockercfg_service: dockercfg_generator
 - name: Deploy (to Docker Hub)

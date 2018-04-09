@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#TODO: Usage of codeship_heroku is deprecated, remove when not in use anymore
+
 set -e
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
@@ -10,10 +12,15 @@ SCRIPT_NAME=${1:?'You need to provide the action as the first parameter'}
 
 SCRIPT_PATH=$DIR/codeship_heroku_$SCRIPT_NAME
 
-if [ -x $SCRIPT_PATH ]
-then
-  $SCRIPT_PATH "${@:2}"
+if [ -x "${SCRIPT_PATH}" ]; then
+  if [ "${SCRIPT_NAME}" == "deploy" ]; then
+    echo "Using codeship_heroku as entry point for your deployments is deprecated. Please use codeship_heroku_deploy directly!"
+    CODESHIP_HEROKU_API_KEY="${HEROKU_API_KEY}" CODESHIP_HEROKU_DEPLOY_FOLDER="${2}" CODESHIP_HEROKU_APP_NAME="${3}" $SCRIPT_PATH
+  else
+    echo "ACTION ${SCRIPT_NAME} is not supported"
+    exit 1
+  fi
 else
-  echo "ACTION ${SCRIPT_NAME} is currently not supported"
+  echo "ACTION ${SCRIPT_NAME} is not supported"
   exit 1
 fi

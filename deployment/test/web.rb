@@ -1,5 +1,7 @@
 require 'sinatra'
 
+
 get '/' do
-  "Hello, world"
+  whom = File.open("whom.txt").read
+  "Hello, #{whom}"
 end

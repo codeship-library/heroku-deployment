@@ -1,62 +1,126 @@
 #!/bin/bash
+set -e
+set -o pipefail
 
-AFTER_DEPLOYMENT_WAIT_TIME=5
+PREVIOUS_WORKING_DIRECTORY="${PWD}"
 
-echo "STARTING DEPLOYMENT"
+CODESHIP_HEROKU_APP_NAME=${CODESHIP_HEROKU_APP_NAME:-""}
+CODESHIP_HEROKU_API_KEY=${CODESHIP_HEROKU_API_KEY:-""}
+CODESHIP_HEROKU_DEPLOY_FOLDER=${CODESHIP_HEROKU_DEPLOY_FOLDER:-"${PWD}"}
+CODESHIP_HEROKU_POST_DEPLOY_COMMAND=${CODESHIP_HEROKU_POST_DEPLOY_COMMAND:-""}
+CODESHIP_HEROKU_URL=${CODESHIP_HEROKU_URL:-""}
+CODESHIP_HEROKU_CHECK_APP_URL=${CODESHIP_HEROKU_CHECK_APP_URL:-false}
 
-APPLICATION_FOLDER=${1:?'You need to provide the directory with your code as the second parameter'}
-HEROKU_APP_NAME=${2:?'You need to provide the application name as the third parameter'}
+SCRIPT_DIRECTORY="$( cd "$(dirname "$0")" ; pwd -P )"
 
-function error_message() {
-  echo -e "DEPLOYMENT FAILED on line $1 of the deployment script"
+function help {
+  cat << EOF
+heroku_deploy Usage:
+--
+
+required:
+-N or CODESHIP_HEROKU_APP_NAME: heroku app name
+-K or CODESHIP_HEROKU_API_KEY: heroku API key
+
+optional:
+-f or CODESHIP_HEROKU_DEPLOY_FOLDER: folder to deploy
+-d or CODESHIP_HEROKU_POST_DEPLOY_COMMAND: one-off command to run after deployment
+-u or CODESHIP_HEROKU_URL: url running the service (to use in conjunction with -c)
+-c or CODESHIP_HEROKU_CHECK_APP_URL: check url if service is running after deployment
+-h: this
+
+EOF
 }
 
-trap 'error_message $LINENO' ERR
+function check_url {
+  local tries=6
+  local status=0
+  local cmd="wget --no-check-certificate --output-document=/dev/null ${1}"
 
-set -o pipefail
-set -e
+  for (( i = 1; i <=${tries}; i++ )); do
+    echo -e "\e[0;36mTrying ($i of ${TRIES}) '${cmd}'\e[0m"
+    ${cmd}
+    status=$?
 
-echo "CHANGING Directory to $APPLICATION_FOLDER"
-cd $APPLICATION_FOLDER
+    if [ ${status} -eq 0 ]; then
+      break
+    fi
 
-echo "CHECKING Access to Heroku application $HEROKU_APP_NAME"
-codeship_heroku check_access $HEROKU_APP_NAME
+    if [ ${status} -eq 5 ]; then
+      echo -e "\e[0;33mCheck failed because of an error validating the SSL certificate.\e[0m"
+      echo -e "\e[0;33mWe will retry without checking the certificate, but this behaviour will change in the future!\e[0m"
+      cmd="${original_cmd}"
+      status=0
+    fi
 
-ARTEFACT_PATH=/tmp/deployable_artifact.tar.gz
+    if [ $i -lt ${TRIES} ]; then
+      echo -e "\e[0;36mWaiting ${WAIT} seconds before trying again.\e[0m"
+      echo "------------------------------------------------------------------------------------------------------"
+      sleep "${WAIT}"
+    fi
+  done
 
-echo "PACKAGING Tar.gz for deployment"
-tar -pczf $ARTEFACT_PATH ./
+  return ${status}
+}
 
-echo "PREPARING Heroku source for upload"
-sources=`curl -sS -X POST https://api.heroku.com/apps/$HEROKU_APP_NAME/sources -H 'Accept: application/vnd.heroku+json; version=3' -H "Authorization: Bearer $HEROKU_API_KEY"`
+while getopts "N:K:f:u:d:ch" opt; do
+  case "$opt" in
+    N)
+      CODESHIP_HEROKU_APP_NAME="$OPTARG"; ;;
+    K)
+      CODESHIP_HEROKU_API_KEY="$OPTARG"; ;;
+    f)
+      CODESHIP_HEROKU_DEPLOY_FOLDER="$OPTARG"; ;;
+    d)
+      CODESHIP_HEROKU_POST_DEPLOY_COMMAND="$OPTARG"; ;;
+    u)
+      CODESHIP_HEROKU_URL="$OPTARG"; ;;
+    c)
+      CODESHIP_HEROKU_CHECK_APP_URL=true; ;;
+    h) help; exit 1 ;;
+    *)
+      help
+      exit 1 ;;
+  esac
+done
 
-get_url=`echo $sources | jq -r .source_blob.get_url`
-put_url=`echo $sources | jq -r .source_blob.put_url`
+#input validation
+if [ "${CODESHIP_HEROKU_APP_NAME}" == "" ]; then
+  echo "app-name not set, exiting" >&2
+  help
+  exit 1
+fi
 
-echo "UPLOADING Tar.gz file to Heroku"
-curl -sS -X PUT "$put_url" -H 'Content-Type:' --data-binary @$ARTEFACT_PATH
+#input validation
+if [ "${CODESHIP_HEROKU_API_KEY}" == "" ]; then
+  echo "api-key not set, exiting" >&2
+  help
+  exit 1
+fi
 
-echo "STARTING Build process on Heroku"
-deployment=`curl -sS -X POST https://api.heroku.com/apps/$HEROKU_APP_NAME/builds -d "{\"source_blob\":{\"url\":\"$get_url\", \"version\": \"$CI_COMMIT_ID\"}}" -H 'Accept: application/vnd.heroku+json; version=3' -H 'Content-Type: application/json' -H "Authorization: Bearer $HEROKU_API_KEY"`
+trap 'echo error executing "$BASH_COMMAND" in line $LINENO' ERR
 
-deployment_id=`echo "$deployment" | jq -r .id`
+if [ "${CODESHIP_HEROKU_DEPLOY_FOLDER}" != "${PWD}" ]; then
+  echo "Changing directory to ${CODESHIP_HEROKU_DEPLOY_FOLDER}"
+  cd "${CODESHIP_HEROKU_DEPLOY_FOLDER}"
+fi
 
-echo "DEPLOYMENT: $deployment_id"
 
-output_stream_url=`echo "$deployment" | jq -r .output_stream_url`
+if ! HEROKU_API_KEY=$CODESHIP_HEROKU_API_KEY "${SCRIPT_DIRECTORY}/codeship_heroku_check_access" "${CODESHIP_HEROKU_APP_NAME}"; then
+  echo "could not access heroku app ${CODESHIP_HEROKU_APP_NAME}, exiting" >&2
+  exit 1
+fi
 
-curl -sS "$output_stream_url"
+#--include-vcs-ignore set for compatibility with Ubuntu 14.04: https://github.com/heroku/heroku-builds/issues/36
+HEROKU_API_KEY=${CODESHIP_HEROKU_API_KEY} heroku builds:create --include-vcs-ignore -a "${CODESHIP_HEROKU_APP_NAME}"
 
-# Sleep for 2 seconds to allow Heroku to store the result of the Deployment
-sleep $AFTER_DEPLOYMENT_WAIT_TIME
+if [ "${CODESHIP_HEROKU_POST_DEPLOY_COMMAND}" != "" ]; then
+  HEROKU_API_KEY=$CODESHIP_HEROKU_API_KEY "${SCRIPT_DIRECTORY}/codeship_heroku_run" "${CODESHIP_HEROKU_POST_DEPLOY_COMMAND}" "${CODESHIP_HEROKU_APP_NAME}"
+fi
 
-echo "CHECKING API for deployment success"
+if [ "${CODESHIP_HEROKU_CHECK_APP_URL}" == "true" ]; then
+  URL="${CODESHIP_HEROKU_URL:-"http://${CODESHIP_HEROKU_APP_NAME}.herokuapp.com"}"
+  check_url "${URL}"
+fi
 
-deployment_result_json=`curl -sS https://api.heroku.com/apps/$HEROKU_APP_NAME/builds/$deployment_id -H 'Accept: application/vnd.heroku+json; version=3' -H "Authorization: Bearer $HEROKU_API_KEY"`
-
-deployment_status=`echo "$deployment_result_json" | jq -r .status`
-echo "DEPLOYMENT STATUS: $deployment_status"
-
-[ "$deployment_status" = "succeeded" ]
-
-echo "DEPLOYMENT SUCCESSFUL"
+cd "${PREVIOUS_WORKING_DIRECTORY}"
