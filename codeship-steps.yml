@@ -7,6 +7,9 @@
 - name: Deployment Test via Ansible Container with URL check
   service: heroku_on_ansible
   command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app -c
+- name: Deployment Test via Ansible Container with a failing URL check
+  service: heroku_on_ansible
+  command: bash -c "! codeship_heroku_deploy -f /app -N codeship-test-ruby-app -c -u http://foo.bar.baz"
 - name: Make sure that files are executable in "legacy paths"
   service: heroku_on_ansible
   command: bash -c 'test -x "$(which check_access_to_heroku_app)" && test -x "$(which heroku_run)"'
