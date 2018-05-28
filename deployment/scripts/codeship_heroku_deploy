@@ -112,7 +112,7 @@ if ! HEROKU_API_KEY=$CODESHIP_HEROKU_API_KEY "${SCRIPT_DIRECTORY}/codeship_herok
 fi
 
 #--include-vcs-ignore set for compatibility with Ubuntu 14.04: https://github.com/heroku/heroku-builds/issues/36
-HEROKU_API_KEY=${CODESHIP_HEROKU_API_KEY} heroku builds:create --include-vcs-ignore -a "${CODESHIP_HEROKU_APP_NAME}"
+HEROKU_API_KEY=${CODESHIP_HEROKU_API_KEY} heroku builds:create --include-vcs-ignore -a "${CODESHIP_HEROKU_APP_NAME}" --version "${CI_COMMIT_ID}"
 
 if [ "${CODESHIP_HEROKU_POST_DEPLOY_COMMAND}" != "" ]; then
   HEROKU_API_KEY=$CODESHIP_HEROKU_API_KEY "${SCRIPT_DIRECTORY}/codeship_heroku_run" "${CODESHIP_HEROKU_POST_DEPLOY_COMMAND}" "${CODESHIP_HEROKU_APP_NAME}"
