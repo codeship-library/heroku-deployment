@@ -10,6 +10,7 @@ RUN \
     bash \
     ca-certificates \
     sudo \
+    curl \
     wget && \
   apt-get clean -y && \
   rm -rf /var/lib/apt/lists/*
