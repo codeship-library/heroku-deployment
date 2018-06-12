@@ -1,7 +1,7 @@
 FROM debian:jessie
 LABEL maintainer='Codeship Inc., <maintainers@codeship.com>'
 
-ENV CACHE_BUST='2018-04-06' \
+ENV CACHE_BUST='2018-06-11' \
     PATH="/usr/local/heroku/bin:${PATH}"
 
 RUN \
@@ -10,6 +10,7 @@ RUN \
     bash \
     ca-certificates \
     sudo \
+    curl \
     wget && \
   apt-get clean -y && \
   rm -rf /var/lib/apt/lists/*
