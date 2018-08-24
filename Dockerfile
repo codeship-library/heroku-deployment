@@ -1,7 +1,7 @@
 FROM debian:jessie
 LABEL maintainer='Codeship Inc., <maintainers@codeship.com>'
 
-ENV CACHE_BUST='2018-07-27' \
+ENV CACHE_BUST='2018-08-24' \
     PATH="/usr/local/heroku/bin:${PATH}"
 
 RUN \
