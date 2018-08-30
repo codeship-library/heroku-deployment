@@ -37,10 +37,13 @@ EOF
 function check_url {
   local tries=6
   local status=0
+  local wait=5
   local cmd="wget --no-check-certificate --output-document=/dev/null ${1}"
 
+  sleep ${wait}
+
   for (( i = 1; i <=${tries}; i++ )); do
-    echo -e "\e[0;36mTrying ($i of ${TRIES}) '${cmd}'\e[0m"
+    echo -e "\e[0;36mTrying ($i of ${tries}) '${cmd}'\e[0m"
     ${cmd}
     status=$?
 
@@ -55,10 +58,10 @@ function check_url {
       status=0
     fi
 
-    if [ $i -lt ${TRIES} ]; then
-      echo -e "\e[0;36mWaiting ${WAIT} seconds before trying again.\e[0m"
+    if [ $i -lt ${tries} ]; then
+      echo -e "\e[0;36mWaiting ${wait} seconds before trying again.\e[0m"
       echo "------------------------------------------------------------------------------------------------------"
-      sleep "${WAIT}"
+      sleep "${wait}"
     fi
   done
 
