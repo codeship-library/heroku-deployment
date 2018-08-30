@@ -1,6 +1,6 @@
 - name: Turn /app folder into git repository for tests
   service: heroku_on_ansible
-  command: cd /app && git init && git commit -m 'foo'
+  command: bash -c 'cd /app && git init && git commit -m "foo"'
 - name: Deployment Test via Ansible Container
   service: heroku_on_ansible
   command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app
