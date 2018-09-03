@@ -10,6 +10,7 @@ CODESHIP_HEROKU_DEPLOY_FOLDER=${CODESHIP_HEROKU_DEPLOY_FOLDER:-"${PWD}"}
 CODESHIP_HEROKU_POST_DEPLOY_COMMAND=${CODESHIP_HEROKU_POST_DEPLOY_COMMAND:-""}
 CODESHIP_HEROKU_URL=${CODESHIP_HEROKU_URL:-""}
 CODESHIP_HEROKU_CHECK_APP_URL=${CODESHIP_HEROKU_CHECK_APP_URL:-false}
+CODESHIP_HEROKU_CLEAN_DEPLOY=${CODESHIP_HEROKU_CLEAN_DEPLOY:-false}
 
 SCRIPT_DIRECTORY="$( cd "$(dirname "$0")" ; pwd -P )"
 
@@ -27,6 +28,7 @@ optional:
 -d or CODESHIP_HEROKU_POST_DEPLOY_COMMAND: one-off command to run after deployment
 -u or CODESHIP_HEROKU_URL: url running the service (to use in conjunction with -c)
 -c or CODESHIP_HEROKU_CHECK_APP_URL: check url if service is running after deployment [true/false]
+-C or CODESHIP_HEROKU_CLEAN_DEPLOY: get checkout folder back into committed state before deployment [true/false]
 -h: this
 
 EOF
@@ -35,10 +37,13 @@ EOF
 function check_url {
   local tries=6
   local status=0
+  local wait=5
   local cmd="wget --no-check-certificate --output-document=/dev/null ${1}"
 
+  sleep ${wait}
+
   for (( i = 1; i <=${tries}; i++ )); do
-    echo -e "\e[0;36mTrying ($i of ${TRIES}) '${cmd}'\e[0m"
+    echo -e "\e[0;36mTrying ($i of ${tries}) '${cmd}'\e[0m"
     ${cmd}
     status=$?
 
@@ -53,17 +58,17 @@ function check_url {
       status=0
     fi
 
-    if [ $i -lt ${TRIES} ]; then
-      echo -e "\e[0;36mWaiting ${WAIT} seconds before trying again.\e[0m"
+    if [ $i -lt ${tries} ]; then
+      echo -e "\e[0;36mWaiting ${wait} seconds before trying again.\e[0m"
       echo "------------------------------------------------------------------------------------------------------"
-      sleep "${WAIT}"
+      sleep "${wait}"
     fi
   done
 
   return ${status}
 }
 
-while getopts "N:K:f:u:d:ch" opt; do
+while getopts "N:K:f:u:d:chC" opt; do
   case "$opt" in
     N)
       CODESHIP_HEROKU_APP_NAME="$OPTARG"; ;;
@@ -77,6 +82,8 @@ while getopts "N:K:f:u:d:ch" opt; do
       CODESHIP_HEROKU_URL="$OPTARG"; ;;
     c)
       CODESHIP_HEROKU_CHECK_APP_URL=true; ;;
+    C)
+      CODESHIP_HEROKU_CLEAN_DEPLOY=true ;;
     h) help; exit 0 ;;
     *)
       help
@@ -109,6 +116,11 @@ fi
 if ! HEROKU_API_KEY=$CODESHIP_HEROKU_API_KEY "${SCRIPT_DIRECTORY}/codeship_heroku_check_access" "${CODESHIP_HEROKU_APP_NAME}"; then
   echo "could not access heroku app ${CODESHIP_HEROKU_APP_NAME}, exiting" >&2
   exit 1
+fi
+
+if [ "${CODESHIP_HEROKU_CLEAN_DEPLOY}" == "true" ]; then
+  git reset --hard HEAD
+  git clean -f
 fi
 
 #--include-vcs-ignore set for compatibility with Ubuntu 14.04: https://github.com/heroku/heroku-builds/issues/36

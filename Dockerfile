@@ -7,6 +7,7 @@ ENV CACHE_BUST='2018-08-24' \
 RUN \
   apt-get update && \
   apt-get install -y --no-install-recommends \
+    git \
     bash \
     ca-certificates \
     sudo \
