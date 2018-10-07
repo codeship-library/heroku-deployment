@@ -1,26 +1,26 @@
 - name: Turn /app folder into git repository for tests
-  service: heroku_on_ansible
+  service: heroku-on-ansible
   command: bash -c 'cd /app && git config --global user.email "you@example.com" && git config --global user.name "Your Name" && git init && git add . && git commit -m "foo"'
 - name: Deployment Test via Ansible Container
-  service: heroku_on_ansible
+  service: heroku-on-ansible
   command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app
 - name: Deployment Test via Ansible Container with extra command
-  service: heroku_on_ansible
+  service: heroku-on-ansible
   command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app -d 'echo "foo"'
 - name: Deployment Test via Ansible Container with URL check
-  service: heroku_on_ansible
+  service: heroku-on-ansible
   command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app -c
 - name: Deployment Test via Ansible Container with a failing URL check
-  service: heroku_on_ansible
+  service: heroku-on-ansible
   command: bash -c "! codeship_heroku_deploy -f /app -N codeship-test-ruby-app -c -u http://foo.bar.baz"
 - name: Deployment via Ansible Container with changes in repository being reset
-  service: heroku_on_ansible
+  service: heroku-on-ansible
   command: bash -c "echo 'foo' > /app/web.rb && codeship_heroku_deploy -f /app -N codeship-test-ruby-app -C -c"
 - name: Negative check for previous test - url check should not succeed if web.rb contains no ruby and repository cleanup is not configured
-  service: heroku_on_ansible
+  service: heroku-on-ansible
   command: bash -c "echo 'foo' > /app/web.rb && ! codeship_heroku_deploy -f /app -N codeship-test-ruby-app -c"
 - name: Make sure that files are executable in "legacy paths"
-  service: heroku_on_ansible
+  service: heroku-on-ansible
   command: bash -c 'test -x "$(which check_access_to_heroku_app)" && test -x "$(which heroku_run)"'
 - name: Deployment Test via plain container
   service: heroku
@@ -35,14 +35,14 @@
   type: serial
   steps:
     - name: Build
-      service: dockercfg_generator
+      service: dockercfg-generator
       command: true
     - name: Test Push
-      service: dockercfg_test
+      service: dockercfg-test
       type: push
       image_name: registry.heroku.com/codeship-container-deploy-test/web
       registry: registry.heroku.com
-      dockercfg_service: dockercfg_generator
+      dockercfg_service: dockercfg-generator
 - name: Deploy (to Docker Hub)
   type: serial
   steps:
@@ -53,7 +53,7 @@
       image_name: codeship/heroku-deployment
       encrypted_dockercfg_path: dockercfg.encrypted
     - name: Push dockercfg Generator
-      service: dockercfg_generator
+      service: dockercfg-generator
       tag: master
       type: push
       image_name: codeship/heroku-dockercfg-generator

@@ -1,4 +1,4 @@
-heroku_on_ansible:
+heroku-on-ansible:
   build:
     image: codeship/heroku-deployment-ansible
     dockerfile_path: Dockerfile.ansible
@@ -14,14 +14,14 @@ heroku:
   encrypted_env_file: heroku-deployment.env.encrypted
   volumes:
     - ./deployment/test:/app
-dockercfg_generator:
+dockercfg-generator:
   build:
     image: codeship/heroku-dockercfg-generator
     path: ./dockercfg-generator
     dockerfile_path: Dockerfile
   add_docker: true
   encrypted_env_file: heroku-deployment.env.encrypted
-dockercfg_test:
+dockercfg-test:
   build:
     image: registry.heroku.com/codeship-deployment-test/web
     path: ./dockercfg-generator
