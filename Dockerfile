@@ -18,12 +18,12 @@ RUN \
   apt-get clean -y && \
   rm -rf /var/lib/apt/lists/*
 
-# Install the Heroku Toolbelt and and add it to the PATH
+# Install the Heroku CLI
 RUN \
-  wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh && \
+  curl https://cli-assets.heroku.com/install-ubuntu.sh | sh && \
+  heroku plugins:install heroku-builds && \
   heroku --version && \
   apt-get clean -y && \
-  heroku plugins:install heroku-builds && \
   rm -rf /var/lib/apt/lists/*
 
 COPY deployment/scripts/ /usr/bin/
