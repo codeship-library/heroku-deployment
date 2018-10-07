@@ -7,11 +7,13 @@ ENV CACHE_BUST='2018-10-07' \
 RUN \
   apt-get update && \
   apt-get install -y --no-install-recommends \
-    git \
+    apt-transport-https \
     bash \
     ca-certificates \
-    sudo \
     curl \
+    git \
+    gnupg \
+    sudo \
     wget && \
   apt-get clean -y && \
   rm -rf /var/lib/apt/lists/*
