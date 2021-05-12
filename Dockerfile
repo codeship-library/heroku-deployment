@@ -1,7 +1,7 @@
 FROM debian:buster
 LABEL maintainer='Codeship Inc., <maintainers@codeship.com>'
 
-ENV CACHE_BUST='2020-10-07' \
+ENV CACHE_BUST='2021-05-11' \
     PATH="/usr/local/heroku/bin:${PATH}"
 
 RUN \
