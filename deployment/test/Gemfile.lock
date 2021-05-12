@@ -16,6 +16,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-16
+  x86_64-linux
 
 DEPENDENCIES
   sinatra (= 2.1.0)
