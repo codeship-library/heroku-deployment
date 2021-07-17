@@ -11,7 +11,7 @@
 - name: install heroku package
   apt:
     package: heroku
-    state: installed
+    state: present
 
 - name: create heroku directory
   file:
