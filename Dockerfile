@@ -1,7 +1,7 @@
 FROM debian:bullseye
 LABEL maintainer='Codeship Inc., <maintainers@codeship.com>'
 
-ENV CACHE_BUST='2022-07-28' \
+ENV CACHE_BUST='2022-08-30' \
     PATH="/usr/local/heroku/bin:${PATH}"
 
 RUN \
