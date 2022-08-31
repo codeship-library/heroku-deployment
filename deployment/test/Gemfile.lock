@@ -23,7 +23,7 @@ DEPENDENCIES
   sinatra (= 2.2.2)
 
 RUBY VERSION
-   ruby 2.7.6p219
+   ruby 3.1.2p20
 
 BUNDLED WITH
-   2.2.17
+   2.3.21
