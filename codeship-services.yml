@@ -23,6 +23,6 @@ dockercfg-generator:
   encrypted_env_file: heroku-deployment.env.encrypted
 dockercfg-test:
   build:
-    image: registry.heroku.com/codeship-deployment-test/web
+    image: registry.heroku.com/codeship-heroku-test-container/web
     path: ./dockercfg-generator
     dockerfile_path: Dockerfile.test

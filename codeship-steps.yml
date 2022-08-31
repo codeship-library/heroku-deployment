@@ -3,34 +3,34 @@
   command: bash -c 'cd /app && git config --global user.email "you@example.com" && git config --global user.name "Your Name" && git init && git add . && git commit -m "foo"'
 - name: Deployment Test via Ansible Container
   service: heroku-on-ansible
-  command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app
+  command: codeship_heroku_deploy -f /app -N codeship-heroku-test-app
 - name: Deployment Test via Ansible Container with extra command
   service: heroku-on-ansible
-  command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app -d 'echo "foo"'
+  command: codeship_heroku_deploy -f /app -N codeship-heroku-test-app -d 'echo "foo"'
 - name: Deployment Test via Ansible Container with URL check
   service: heroku-on-ansible
-  command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app -c
+  command: codeship_heroku_deploy -f /app -N codeship-heroku-test-app -c
 - name: Deployment Test via Ansible Container with a failing URL check
   service: heroku-on-ansible
-  command: bash -c "! codeship_heroku_deploy -f /app -N codeship-test-ruby-app -c -u http://foo.bar.baz"
+  command: bash -c "! codeship_heroku_deploy -f /app -N codeship-heroku-test-app -c -u http://foo.bar.baz"
 - name: Deployment via Ansible Container with changes in repository being reset
   service: heroku-on-ansible
-  command: bash -c "echo 'foo' > /app/web.rb && codeship_heroku_deploy -f /app -N codeship-test-ruby-app -C -c"
+  command: bash -c "echo 'foo' > /app/web.rb && codeship_heroku_deploy -f /app -N codeship-heroku-test-app -C -c"
 - name: Negative check for previous test - url check should not succeed if web.rb contains no ruby and repository cleanup is not configured
   service: heroku-on-ansible
-  command: bash -c "echo 'foo' > /app/web.rb && ! codeship_heroku_deploy -f /app -N codeship-test-ruby-app -c"
+  command: bash -c "echo 'foo' > /app/web.rb && ! codeship_heroku_deploy -f /app -N codeship-heroku-test-app -c"
 - name: Make sure that files are executable in "legacy paths"
   service: heroku-on-ansible
   command: bash -c 'test -x "$(which check_access_to_heroku_app)" && test -x "$(which heroku_run)"'
 - name: Deployment Test via plain container
   service: heroku
-  command: codeship_heroku_deploy -f /app -N codeship-test-ruby-app
+  command: codeship_heroku_deploy -f /app -N codeship-heroku-test-app
 - name: Deployment Test via plain container with old entry point/command
   service: heroku
-  command: codeship_heroku deploy /app codeship-test-ruby-app
+  command: codeship_heroku deploy /app codeship-heroku-test-app
 - name: Heroku Run Test
   service: heroku
-  command: heroku run --exit-code --app codeship-test-ruby-app -- true
+  command: heroku run --exit-code --app codeship-heroku-test-app -- true
 - name: Test dockercfg Generator
   type: serial
   steps:
@@ -40,7 +40,7 @@
     - name: Test Push
       service: dockercfg-test
       type: push
-      image_name: registry.heroku.com/codeship-container-deploy-test/web
+      image_name: registry.heroku.com/codeship-heroku-test-container/web
       registry: registry.heroku.com
       dockercfg_service: dockercfg-generator
 - name: Deploy (to Docker Hub)
