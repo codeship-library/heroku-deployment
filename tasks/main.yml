@@ -27,7 +27,7 @@
   become_user: "{{ heroku_user }}"
 
 - name: install builds plugin
-  shell: heroku plugins:install heroku-builds
+  shell: heroku plugins:install @heroku-cli/heroku-builds
   become: True
   become_user: "{{ heroku_user }}"
   when: heroku_plugins.stdout is not search("heroku-builds")

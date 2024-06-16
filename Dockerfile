@@ -1,7 +1,7 @@
 FROM debian:bookworm
 LABEL maintainer='Codeship Inc., <maintainers@codeship.com>'
 
-ENV CACHE_BUST='2024-05-10' \
+ENV CACHE_BUST='2024-06-15' \
     PATH="/usr/local/heroku/bin:${PATH}"
 
 RUN \
