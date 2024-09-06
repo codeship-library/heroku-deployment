@@ -6,7 +6,7 @@
   command: codeship_heroku_deploy -f /app -N codeship-heroku-test-app
 - name: Deployment Test via Ansible Container with extra command
   service: heroku-on-ansible
-  command: codeship_heroku_deploy -f /app -N codeship-heroku-test-app -d 'echo "foo"'
+  command: codeship_heroku_deploy -f /app -N codeship-heroku-test-app -d 'ruby -v'
 - name: Deployment Test via Ansible Container with URL check
   service: heroku-on-ansible
   command: codeship_heroku_deploy -f /app -N codeship-heroku-test-app -c -u https://codeship-heroku-test-app-9616a0a62535.herokuapp.com/
