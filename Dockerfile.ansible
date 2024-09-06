@@ -2,10 +2,8 @@ FROM ubuntu:24.04
 
 RUN \
   apt-get update && \
-  apt-get install -y --no-install-recommends python3-setuptools python3-pip apt-transport-https ca-certificates wget rsync git gnupg && \
-  pip3 install --upgrade pip && \
-  pip3 install wheel && \
-  pip3 install ansible==10.3.0 pyasn1==0.6.0 ndg-httpsclient==0.5.1 urllib3==1.26.19
+  apt-get install -y --no-install-recommends pipx python3-setuptools python3-pip apt-transport-https ca-certificates wget rsync git gnupg && \
+  pipx install ansible==10.3.0 pyasn1==0.6.0 ndg-httpsclient==0.5.1 urllib3==1.26.19 wheel
 
 COPY tasks /heroku/tasks
 COPY deployment /heroku/deployment
