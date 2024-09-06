@@ -1,9 +1,12 @@
 FROM ubuntu:24.04
 
+ENV PATH="/root/bin:/root/.local/bin:${PATH}"
+
 RUN \
   apt-get update && \
-  apt-get install -y --no-install-recommends pipx python3-setuptools python3-pip apt-transport-https ca-certificates wget rsync git gnupg && \
-  pipx install ansible==10.3.0 pyasn1==0.6.0 ndg-httpsclient==0.5.1 urllib3==1.26.19 wheel
+  apt-get install -y --no-install-recommends pipx python3-setuptools python3-pip apt-transport-https ca-certificates wget rsync git gnupg
+
+RUN pipx install --include-deps ansible==10.3.0
 
 COPY tasks /heroku/tasks
 COPY deployment /heroku/deployment
@@ -12,5 +15,3 @@ RUN echo '---\n- hosts: localhost\n  roles:\n  - role: heroku\n    heroku_user: 
 RUN mkdir /root/bin
 
 RUN ansible-playbook -i localhost -c local site.yml
-
-ENV PATH="/root/bin:${PATH}"
