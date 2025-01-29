@@ -6,7 +6,7 @@ RUN \
   apt-get update && \
   apt-get install -y --no-install-recommends pipx python3-setuptools python3-pip apt-transport-https ca-certificates wget rsync git gnupg
 
-RUN pipx install --include-deps ansible==10.3.0
+RUN pipx install --include-deps ansible==11.2.0
 
 COPY tasks /heroku/tasks
 COPY deployment /heroku/deployment
